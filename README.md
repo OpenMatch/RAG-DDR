@@ -3,4 +3,4 @@
 Source code for our paper :  
 [RAG-DDR: Optimizing Retrieval-Augmented Generation Using Differentiable Data Rewards]()
 
-Our code will be open sourced within the next month.
+Our code will be open sourced later.
