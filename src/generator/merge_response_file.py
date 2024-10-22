@@ -2,7 +2,6 @@ import argparse
 import os
 import json
 
-
 def merge_jsonl_files(input_folder, output_file):
     data_list = []
     jsonl_files = [f for f in os.listdir(input_folder) if f.endswith('.jsonl')]
