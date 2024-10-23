@@ -5,8 +5,8 @@ length=${#items[@]}
 for ((i=0; i<$length; i++)); do
     export CUDA_VISIBLE_DEVICES=${gpu[$i]}
     python gen_llm_response.py  \
-        --input_data_path # The path of constructed orginal train/dev data  \
-        --model_name_or_path # The path of LLM Llama/Minicpm  \
+        --input_data_path # The path of filtered train/dev data from kr moudle  \
+        --model_name_or_path # The path of gen moudle Llama/Minicpm  \
         --output_path # The path to save dpo sample  \
         --loop 5 \
         --top_n 5 \

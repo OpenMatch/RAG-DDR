@@ -21,5 +21,5 @@ deepspeed  --include localhost:$gpu_vis --master_port $MASTER_PORT train.py \
     --use_lora True \
     --num_train_epochs 1 \
     --top_n 5 # n passage use \
-    --llama_style True # if use llama, llama_style is True, else llama_style is False \
+    --llama_style True # if use llama as gen moudel, llama_style is True, else llama_style is False \
     --deepspeed config/ds_config_zero2.json
