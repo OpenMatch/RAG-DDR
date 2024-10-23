@@ -15,10 +15,9 @@ def load_jsonl(data_path):
 def read_csv_to_list(filepath, delimiter=' '):
     with open(filepath, 'r', encoding='utf-8') as file:
         reader = csv.reader(file, delimiter=delimiter)
-        data_list = [row for row in reader]  # 将每一行数据作为列表添加到data_list中
+        data_list = [row for row in reader] 
     return data_list
 def chunk_list(original_list, chunk_size):
-    # 使用列表推导式创建新的分块列表
     return [original_list[i:i + chunk_size] for i in range(0, len(original_list), chunk_size)]
 
 def load_psg_from_wiki(id,corpus):
@@ -28,17 +27,17 @@ def load_psg_from_wiki(id,corpus):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--corpus_path", type=str, 
-                        default="/data/groups/QY_LLM_Other/meisen/trec_2024_rag/marco2.1/corpus.jsonl")
+                        default=None)
     parser.add_argument("--trec_save_path", type=str, nargs='+',
-                        default= ['/home/lixz23/ragsft/data/marco_v2.1/minicpm_retriever_128_256_top100_test/fever_dev_psg.trec','/home/lixz23/ragsft/data/marco_v2.1/minicpm_retriever_128_256_top100_test/trex_dev_psg.trec'])
+                        default= None)
     parser.add_argument("--input_path", type=str, nargs='+',
-                        default= ['/home/lixz23/rag_instruction/KILT-main/data/fever-dev-kilt.jsonl','/home/lixz23/rag_instruction/KILT-main/data/trex-dev-kilt.jsonl'])
+                        default= None)
     parser.add_argument("--topk", type=int, 
                         default=100)
     parser.add_argument("--selectk", type=int, 
                         default=100)
     parser.add_argument("--output_path", type=str, 
-                        default="/home/lixz23/ragsft/data/marco_v2.1/minicpm_retriever_128_256_test_data/nq_qa_dev_psg.jsonl")
+                        default=None)
     args = parser.parse_args()
     
     wiki_text = load_jsonl(args.corpus_path)

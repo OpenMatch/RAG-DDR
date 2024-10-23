@@ -1,27 +1,32 @@
 import argparse
 import os
 import json
+import re
+from tqdm import tqdm
+
+def extract_last_number(file_name):
+    numbers = re.findall(r'\d+', file_name)
+    return int(numbers[-1]) if numbers else 0
 
 def merge_jsonl_files(input_folder, output_file):
     data_list = []
     jsonl_files = [f for f in os.listdir(input_folder) if f.endswith('.jsonl')]
-    jsonl_files.sort()  
 
-    for filename in jsonl_files:
+    jsonl_files.sort()
+    jsonl_files = sorted(jsonl_files, key=extract_last_number)
+
+    for filename in tqdm(jsonl_files):
             file_path = os.path.join(input_folder, filename)
             with open(file_path, 'r') as infile:
-                for line in infile:
+                for line in tqdm(infile):
                     data = json.loads(line)
                     data['_source_file'] = filename
                     data_list.append(data)
 
-
-    with open(output_file, 'w', encoding='utf-8') as outfile:
-        for entry in data_list:
+    with open(output_file, 'w') as outfile:
+        for entry in tqdm(data_list):
             json.dump(entry, outfile)
             outfile.write('\n')
-
-    print(f"finish and file is saved in:{output_file}")
 
 def main():
     parser = argparse.ArgumentParser()
@@ -32,7 +37,6 @@ def main():
     parser.add_argument('--output_file', type=str,
                         default=None,
                         )
-
     args = parser.parse_args()
     merge_jsonl_files(args.input_folder, args.output_file)
 
