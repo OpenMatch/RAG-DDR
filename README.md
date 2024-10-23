@@ -14,7 +14,7 @@ If you find this work useful, please cite our paper and give us a shining star �
 ```
 
 ## Requirement
-**1. Install the following packages using Pip or Conda under this environment**
+**Install the following packages using Pip or Conda under this environment**
 
 ```
 Python==3.10.14
@@ -30,15 +30,16 @@ peft==0.10.0
 ```
 
 ## Traing RAG-DDR
-You can download the lora checkpoint of RAG-DDR directly from [here](https://huggingface.co/OpenMatch/RAG-DDR/tree/main) and merge them, or follow the flow below to train RAG-DDR. In the checkpoint file, ``Gen_model_Llama3_8b`` and ``Kr_model_for_Llama3_8b`` are the Genation and Knowledge Refinement moudle aligned by DDR training, where Llama3-8b is used as the Genation moudle. ``Gen_model_Minicpm_2.4b`` and ``Kr_model_for_Minicpm_2.4b`` are the Genation moudle and Knowledge Refinement aligned by DDR training, where Minicpm-2.4b is used as the Genation moudle.
+You can download the lora checkpoint of RAG-DDR directly from [here](https://huggingface.co/OpenMatch/RAG-DDR/tree/main) and merge them, or follow the flow below to train RAG-DDR. <br>
+❗️Note: In the checkpoint file, ``Gen_model_Llama3_8b`` and ``Kr_model_for_Llama3_8b`` are the Genation and Knowledge Refinement moudle aligned by DDR training, where Llama3-8b is used as the Genation moudle. ``Gen_model_Minicpm_2.4b`` and ``Kr_model_for_Minicpm_2.4b`` are the Genation moudle and Knowledge Refinement aligned by DDR training, where Minicpm-2.4b is used as the Genation moudle.
 
-### Prepare the training and test data**
+### Prepare the training and test data
 (1) Use `git clone` to download this project:
 ```bash
 git clone https://github.com/OpenMatch/RAG-DDR.git
 cd RAG-DDR
 ```
-(2) Construct ``original train/dev dataset``<br>
+(2) Construct ``original train/dev dataset``:<br>
 In order to construct the train/dev dataset for RAG-DDR, you can follow Table 5 in the paper to collect the corresponding dataset and process the data into the following jsonl format. Besides, you can also collect more datasets on your own and process them for DDR training.
 
 ```
@@ -51,7 +52,7 @@ In order to construct the train/dev dataset for RAG-DDR, you can follow Table 5 
 }
 ```
 
-After that, you can use [bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) to retrieve relevant documents from MS MARCO 2.1 for the above constructed data. The MS MARCO 2.1 corpus can be downloaded from [here](https://trec-rag.github.io/annoucements/2024-corpus-finalization/)(❗️Note: The file name is ``msmarco_v2.1_doc_segmented.tar``). specifically，you can go to the ``data`` folder to retrieve the relevant documents for the corresponding data. You need to use bge-large to encode all the documents as embedding and saved in ``--output_dir``:
+After that, you can use [bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) to retrieve relevant documents from MS MARCO 2.1 for the above constructed data. The MS MARCO 2.1 corpus can be downloaded from [here](https://trec-rag.github.io/annoucements/2024-corpus-finalization/)(❗️Note: The file name is ``msmarco_v2.1_doc_segmented.tar``). Specifically，you can go to the ``data`` folder to retrieve the relevant documents for the corresponding data. You need to use bge-large to encode all the documents as embedding and saved in ``--output_dir``:
 
 ```
 cd data
@@ -67,10 +68,10 @@ Finally, you can retrieve the relevant documents for each piece of data based on
 ```
 bash construct_psg_data.sh
 ```
-(3) Construct ``original testing dataset``<br>
+(3) Construct ``original testing dataset``:<br>
 For constructing the ``original testing dataset``, you can download KILT's test dataset from [here](``https://github.com/facebookresearch/KILT``) and select the corresponding test dataset from KILT according to Table 5 in the paper. After that, you can retrieve the relevant documents for each test dataset to get ``original testing dataset`` based on the above data processing steps.
 
-(4) Download the constructed data directly<br>
+(4) Download the constructed data directly:<br>
 We also provide the [``original train/dev dataset``](https://drive.google.com/drive/folders/1c67ei4Lx2mC0U-dMcHtLbS5oEXoDF8np?usp=drive_link) and [``original testing dataset``](https://drive.google.com/drive/folders/1bvIdpTWi12lR_WoMfO6fAwukOfjJeIE1?usp=drive_link), which we have processed.
 
 ### Training the Generation Model
@@ -86,7 +87,6 @@ bash kr_inference.sh
 
 (3) Third step: Start generating DPO sampling data based on the vanilla Generation Model and refined dataset from second step.
 ```
-cd scripts
 bash gen_forward.sh
 ```
 (4) Fourth step: The data files generated in third step are merged using ``merge_response_file.py`` to obtain DPO sampling data. Then generate DPO train/dev dataset to train Generation Model based on these DPO samples.
@@ -132,7 +132,6 @@ bash kr_inference.sh
 ```
 (2) Second step: After getting the refinement dataset, you can feed it into the Generation Module to generate the responses and evaluate the effects of RAG-DDR.
 ```
-cd scripts
 bash gen_inference.sh
 ```
 For different tasks, you need to set different task identifiers, evaluation metrics identifiers and generation max tokens for ``--task``, ``--metric`` and ``--max_new_token``:
