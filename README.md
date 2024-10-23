@@ -69,7 +69,7 @@ Finally, you can retrieve the relevant documents for each piece of data based on
 bash construct_psg_data.sh
 ```
 (3) Construct ``original testing dataset``:<br>
-For constructing the ``original testing dataset``, you can download KILT's test dataset from [here](``https://github.com/facebookresearch/KILT``) and select the corresponding test dataset from KILT according to Table 5 in the paper. After that, you can retrieve the relevant documents for each test dataset to get ``original testing dataset`` based on the above data processing steps.
+For constructing the ``original testing dataset``, you can download KILT's test dataset from [here](https://github.com/facebookresearch/KILT) and select the corresponding test dataset from KILT according to Table 5 in the paper. After that, you can retrieve the relevant documents for each test dataset to get ``original testing dataset`` based on the above data processing steps.
 
 (4) Download the constructed data directly:<br>
 We also provide the [``original train/dev dataset``](https://drive.google.com/drive/folders/1c67ei4Lx2mC0U-dMcHtLbS5oEXoDF8np?usp=drive_link) and [``original testing dataset``](https://drive.google.com/drive/folders/1bvIdpTWi12lR_WoMfO6fAwukOfjJeIE1?usp=drive_link), which we have processed.
