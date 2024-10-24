@@ -112,7 +112,7 @@ After training the Knowledge Refinement Model, you can start training the Knowle
 (1) First step: Go to ``scripts`` folder, and start generating DPO sampling data based on the ``original train/dev dataset`` and the Generaton Model trained from the previous step.
 ```
 cd scripts
-bash kr_forward.sh
+bash kr_gen_forward.sh
 ```
 
 (2) Second step:
@@ -151,5 +151,5 @@ For different tasks, you need to set different task identifiers, evaluation metr
 ## Contact
 If you have questions, suggestions, and bug reports, please email:
 ```
-1837917467@qq.com  
+2490257@stu.neu.edu.cn 
 ```

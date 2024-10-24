@@ -208,10 +208,8 @@ def main():
         print(f"{arg}: {value}")
 
     input = read_jsonl(args.input_data_path)
-    
     split_input = split_list_evenly(input,args.cut_chunk)
     input_list = split_input[args.number_chunk]
-
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
     dataset = LLMDataset(input_list,args,tokenizer)
     dataloader = DataLoader(dataset=dataset, batch_size=args.batch_size, collate_fn= dataset.Collactor,)

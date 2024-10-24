@@ -142,13 +142,13 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_file_path', type=str,
-                        default="/home/lixz23/ragsft/data/marco_v2.1/bge_large_retriever_128_256_top100/nq_dev_psg.jsonl")
+                        default=None)
     parser.add_argument('--model_name_or_path', type=str,
-                        default="/home/lixz23/ragsft/DPO/icrl2024_checkpoint/rerank_sft/merge-2500")
+                        default=None)
     parser.add_argument('--output_path', type=str,
-                        default="/data/groups/QY_LLM_Other/lixinze/icrl_2024/rerank/LLM_rerank/top_50_trained_marco/nq_list")
+                        default=None)
     parser.add_argument('--file_name', type=str,
-                        default="nq_dev_psg.jsonl")
+                        default=None)
     parser.add_argument('--top_n', type=int,
                         default=100)
     parser.add_argument('--need_n', type=int,

@@ -35,7 +35,7 @@ class llmDataset(Dataset):
             if item['data_type'] in ['commonsense_qa', 'math_qa',"aqua_rat","ecqa"]:
                 raw_input = llama_multi_choice.format(item['question'])
 
-            if item['data_type'] == ['web_questions','wiki_qa','yahoo_answers_qa',"marcoqa"]:
+            if item['data_type'] in ['web_questions','wiki_qa','yahoo_answers_qa',"marcoqa"]:
                 raw_input = QA_templeta.format(item['question'])
                
             if item['data_type'] in ["gsm8k","strategyqa"]:
@@ -57,7 +57,7 @@ class llmDataset(Dataset):
             if item['data_type'] in ['commonsense_qa','math_qa']:
                 raw_input = multi_choice.format(item['question'])
             
-            if item['data_type'] == ['web_questions','wiki_qa','yahoo_answers_qa',"marcoqa"]:
+            if item['data_type'] in ['web_questions','wiki_qa','yahoo_answers_qa',"marcoqa"]:
                 raw_input = QA_templeta.format(item['question'])
                 
             if item['data_type'] in ["aqua_rat","ecqa"]:
@@ -168,19 +168,18 @@ def main():
     parser.add_argument('--model_name_or_path', type=str,
                         default="/home/lixz23/pretrain-model/Llama3-8b-instruct")
     parser.add_argument('--output_path', type=str,
-                        default="/data/groups/QY_LLM_Other/lixinze/icrl_2024/rerank/train_rerank_data/minicpm_top5/marco/train_list")
-    parser.add_argument('--batch_size', type=int,
-                        default=1)
+                        default="/home/lixz23/ragsft/RAG-DDR_github_test/test_data")
     parser.add_argument('--loop', type=int,
-                        default=1)
+                        default=1, help="loop must default to 1")
     parser.add_argument('--cut_chunk', type=int,
                         default=8)
     parser.add_argument('--number_chunk', type=int,
                         default=0)
-    parser.add_argument('--chat_templete', action='store_true',default=True)
+    parser.add_argument('--top_n', type=int,
+                        default=100)
     parser.add_argument('--llama_style', action='store_true',default=True)
-    args = parser.parse_args()
 
+    args = parser.parse_args()
     args = parser.parse_args()
     print("The parameter configuration is as follows:")
     for key, value in vars(args).items():
@@ -190,92 +189,73 @@ def main():
     split_input = split_list_evenly(input,args.cut_chunk)
     input_list = split_input[args.number_chunk]
     tokenizer = AutoTokenizer.from_pretrained(args.model_name_or_path)
-
-    
     dataset = llmDataset(input_list,args,tokenizer)
-    dataloader = DataLoader(dataset=dataset,
-                                      batch_size=args.batch_size,collate_fn= dataset.Collactor,)
+    dataloader = DataLoader(dataset=dataset,batch_size=1,collate_fn= dataset.Collactor,)
     
-    temperature_list = [1.0]
     all_save_list = [[] for _ in range(len(input_list))]
     
     llm = LLM(model=args.model_name_or_path, tensor_parallel_size= 1, trust_remote_code=True, dtype='bfloat16',)
-    for temp in tqdm(temperature_list):
-        params_dict = {
-            "n": 1,
-            "best_of": 1,
-            "presence_penalty": 1.0,
-            "frequency_penalty": 0.0,
-            "temperature": temp,
-            "top_p": 0.8,
-            "top_k": -1,
-            "use_beam_search": False,
-            "length_penalty": 1,
-            "early_stopping": False,
-            "stop": None,
-            "stop_token_ids": None,
-            "ignore_eos": False,
-            "max_tokens": 100,
-            "logprobs": None,
-            "prompt_logprobs": None,
-            "skip_special_tokens": True,
-        }
+    params_dict = {
+        "n": 1,
+        "best_of": 1,
+        "presence_penalty": 1.0,
+        "frequency_penalty": 0.0,
+        "temperature": 1.0,
+        "top_p": 0.8,
+        "top_k": -1,
+        "use_beam_search": False,
+        "length_penalty": 1,
+        "early_stopping": False,
+        "stop": None,
+        "stop_token_ids": None,
+        "ignore_eos": False,
+        "max_tokens": 100,
+        "logprobs": None,
+        "prompt_logprobs": None,
+        "skip_special_tokens": True,
+    }
 
-        # Create a sampling params object.
-        sampling_params = SamplingParams(**params_dict)
+    # Create a sampling params object.
+    sampling_params = SamplingParams(**params_dict)
 
-        # Create an LLM.
-        locate = 0
-        prior = 0
-        next = 0
+    # Create an LLM.
+    locate=0
+    for batch in tqdm(dataloader):
+        
+        batch_augment_query = batch['augment_input']
+        batch_augment_query = sum(batch_augment_query ,[])
+        ids = batch['id']
+        type_list = batch['type']
+        data_type_list = batch['data_type']
+        
+        augment_outputs = llm.generate(batch_augment_query, sampling_params)
+        augment_outputs = [augment_outputs[i:i + args.top_n] for i in range(0, len(augment_outputs), args.top_n)]
+        
+        for id, aug, type,data_type in zip(ids,augment_outputs, type_list,data_type_list):
 
-
-        for batch in tqdm(dataloader):
+            all_save_list[locate] = {}
+            all_save_list[locate]['id'] = id
+            all_save_list[locate]['context']=[]
             
-            batch_augment_query = batch['augment_input']
-            batch_augment_query = sum(batch_augment_query ,[])
-            ids = batch['id']
-            type_list = batch['type']
-            data_type_list = batch['data_type']
-            locate = next
-            prior = next
-            
-            for loop in range(args.loop):
-                locate = prior
-                augment_outputs = llm.generate(batch_augment_query, sampling_params)
-                augment_outputs = [augment_outputs[i:i + 100] for i in range(0, len(augment_outputs), 100)]
+            aug_text_list =[]
+            for aug_text in aug:
+                aug_text_list.append(aug_text.outputs[0].text)
                 
-                for id, aug, type,data_type in zip(ids,augment_outputs, type_list,data_type_list):
-                    if loop == 0 :
-                        all_save_list[locate] = {}
-                        all_save_list[locate]['id'] = id
-                        all_save_list[locate]['context']=[]
-                    
-                    aug_text_list =[]
-                    for aug_text in aug:
-                        aug_text_list.append(aug_text.outputs[0].text)
-                        
-                    for idx, aug_text in enumerate(aug_text_list):
-                        tempt = {}
-                        tempt['text'] = aug_text
-                        tempt['temperature'] = temp
-                        tempt['type'] = type[idx]
-                        tempt['data_type']=data_type
-                        tempt['loop'] = str(loop+1)
-                        all_save_list[locate]['context'].append(tempt)
-                                           
-                    locate+=1
-                    if loop == 0:
-                        # next 为下一个开始的索引
-                        next = locate
+            for idx, aug_text in enumerate(aug_text_list):
+                tempt = {}
+                tempt['text'] = aug_text
+                tempt['temperature'] = 1.0
+                tempt['type'] = type[idx]
+                tempt['data_type']=data_type
+                tempt['loop'] = str(1)
+                all_save_list[locate]['context'].append(tempt)
+            locate+=1
+                                    
                     
     out_put_path = os.path.join(args.output_path,'all_text_data_{}.jsonl'.format(args.number_chunk))
     with open(out_put_path, 'w', encoding='utf-8') as f:
         for item in all_save_list:
             f.write(json.dumps(item) + '\n')
-
-
-    print("---------finish--------------")
 
 if __name__ == "__main__":
     main()

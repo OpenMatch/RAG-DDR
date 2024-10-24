@@ -9,10 +9,9 @@ random.seed(42)
 
 def _rougel_score(prediction, ground_truth):
     rouge = Rouge()
-    # no normalization
     try:
         scores = rouge.get_scores(prediction, ground_truth, avg=True)
-    except ValueError:  # "Hypothesis is empty."
+    except ValueError:
         return 0.0
     return scores["rouge-l"]["f"]
 
@@ -130,15 +129,15 @@ def save_radit_data(args, raw_data, dpo_data):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--raw_input_path", type=str, 
-                        default="/data/home/lixz23/ragsft/data/marco_v2.1/bge_large_retriever_128_256_top100/retriever_train_4000_noread_psg.jsonl",
+                        default=None,
                         help="The path of original training/evaluation data file.")
     
     parser.add_argument("--dpo_input_path", type=str, 
-                        default="/data/groups/QY_LLM_Other/lixinze/icrl_2024/rerank/LLM_rerank/minicpm_merge_2600_rewared/train_top100_reward_list/all_text.jsonl",
+                        default=None,
                         help="The path of responses that llm generate.")
     
     parser.add_argument("--out_path", type=str, 
-                        default="/data/groups/QY_LLM_Other/lixinze/icrl_2024/rerank/LLM_rerank/double_train_rerank/double_llama_2300_reward_random_100/1.jsonl",
+                        default=None,
                         help="Saved jsonl file path.")
     
     parser.add_argument("--llama_style", action='store_true',
@@ -147,7 +146,7 @@ def main():
     
     parser.add_argument("--top_n", type=int, 
                         default=100,
-                        help="n passage refined.")
+                        help="n passage need to refine.")
 
     args = parser.parse_args()
     raw_data = read_jsonl(args.raw_input_path)

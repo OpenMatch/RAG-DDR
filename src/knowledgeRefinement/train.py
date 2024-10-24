@@ -20,18 +20,18 @@ random.seed(42)
 
 @dataclass
 class ModelArguments:
-    model_name_or_path: Optional[str] = field(default="/home/lixz23/pretrain-model/Llama3-8b-instruct")
+    model_name_or_path: Optional[str] = field(default=None)
     cache_dir: str = field(default="tmp")
 
 
 @dataclass
 class DataArguments:
     train_data_path: str = field(
-        default="/data/groups/QY_LLM_Other/lixinze/icrl_2024/rerank/LLM_rerank/marco_minicpm_reward/top_20_random/dev.jsonl",
+        default=None,
         metadata={"help": "Path to the training data."},
     )
     eval_data_path: str = field(
-        default="/data/groups/QY_LLM_Other/lixinze/icrl_2024/rerank/LLM_rerank/marco_minicpm_reward/top_20_random/dev.jsonl",
+        default=None,
         metadata={"help": "Path to the test data."},
     )
     
@@ -42,15 +42,15 @@ class DataArguments:
 
 @dataclass
 class TrainingArguments(transformers.TrainingArguments):
-    optim: str = field(default="adamw_torch")
+    optim: str = field(default=None)
     use_lora: bool = field(default=True)
-    output_dir : str = field(default="/home/lixz23/ragsft/DPO/checkpoint/marco_v2.1/test/check")
+    output_dir : str = field(default=None)
     save_steps : int = field(default=1000)
     eval_steps : int = field(default=200)
     per_device_train_batch_size: int = field(default=1)
     evaluation_strategy: str = field(default='steps')
     logging_steps : int = field(default=10)
-    logging_dir : str = field(default="/home/lixz23/ragsft/DPO/checkpoint/marco_v2.1/test/log")
+    logging_dir : str = field(default=None)
     bf16 : bool = field(default=True)
     num_train_epochs: int = field(default=10)
 

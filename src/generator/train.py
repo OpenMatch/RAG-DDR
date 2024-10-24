@@ -114,23 +114,18 @@ def preprocessing(example,args,tokenizer):
         if example['data_type'] in ['commonsense_qa', 'math_qa',"aqua_rat","ecqa"]:
             query = llama_multi_choice.format(example['question'])
 
-        if example['data_type'] == 'coqa' or example['data_type'] =='web_questions' or example['data_type'] =='wiki_qa' or example['data_type'] =='yahoo_answers_qa' \
-            or example['data_type'] =="marcoqa":
+        if example['data_type'] == ['web_questions','wiki_qa','yahoo_answers_qa',"marcoqa"]:
             query = QA_templeta.format(example['question'])
         
         if example['data_type'] in ["gsm8k","strategyqa"]:
-            query = llama_QA_COT_templeta + COT_question.format(example['question']) 
-
-        if example['data_type'] in ['rag_bench']:
-            query = example['question']    
+            query = llama_QA_COT_templeta + COT_question.format(example['question'])   
 
     else:
             
-        if example['data_type'] == 'commonsense_qa' or example['data_type'] == 'math_qa':
+        if example['data_type'] in ['commonsense_qa','math_qa']:
             query = multi_choice.format(example['question'])
             
-        if example['data_type'] == 'coqa' or example['data_type'] =='web_questions' or example['data_type'] =='wiki_qa' or example['data_type'] =='yahoo_answers_qa' \
-            or example['data_type'] =="marcoqa":
+        if example['data_type'] in ['web_questions','wiki_qa','yahoo_answers_qa',"marcoqa"]:
             query = QA_templeta.format(example['question'])
         
         if example['data_type'] in ["aqua_rat","ecqa"]:
