@@ -3,9 +3,9 @@
 Source code for our paper :  
 [RAG-DDR: Optimizing Retrieval-Augmented Generation Using Differentiable Data Rewards](https://arxiv.org/abs/2410.13509)
 
-Click the links below to view our papers and checkpoints
+Click the links below to view our papers, checkpoints, and published models:
 
-<a href='https://arxiv.org/abs/2410.13509'><img src='https://img.shields.io/badge/Paper-Arxiv-red'></a><a href='https://huggingface.co/OpenMatch/RAG-DDR'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoint-blue'>
+<a href='https://arxiv.org/abs/2410.13509'><img src='https://img.shields.io/badge/Paper-Arxiv-red'></a><a href='https://huggingface.co/OpenMatch/RAG-DDR'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoint-blue'></a><a href='https://huggingface.co/openbmb/MiniCPM3-RAG-LoRA'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-MiniCPM3-RAG-LoRA-blue'></a>
 
 If you find this work useful, please cite our paper and give us a shining star 🌟
 ```
