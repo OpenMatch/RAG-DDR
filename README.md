@@ -147,5 +147,5 @@ For different tasks, you need to set different task identifiers, evaluation metr
 ## Contact
 If you have questions, suggestions, and bug reports, please email:
 ```
-1837917467@qq.com     meisen@stumail.neu.edu.cn  
+1837917467@qq.com  
 ```
