@@ -164,11 +164,11 @@ def split_list_evenly(lst, n):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_path', type=str,
-                        default="/home/lixz23/ragsft/data/marco_v2.1/bge_large_retriever_128_256_top100/retriever_train_4000_noread_psg.jsonl")
+                        default=None)
     parser.add_argument('--model_name_or_path', type=str,
-                        default="/home/lixz23/pretrain-model/Llama3-8b-instruct")
+                        default=None)
     parser.add_argument('--output_path', type=str,
-                        default="/home/lixz23/ragsft/RAG-DDR_github_test/test_data")
+                        default=None)
     parser.add_argument('--loop', type=int,
                         default=1, help="loop must default to 1")
     parser.add_argument('--cut_chunk', type=int,
@@ -177,7 +177,7 @@ def main():
                         default=0)
     parser.add_argument('--top_n', type=int,
                         default=100)
-    parser.add_argument('--llama_style', action='store_true',default=True)
+    parser.add_argument('--llama_style', action='store_true')
 
     args = parser.parse_args()
     args = parser.parse_args()
@@ -226,12 +226,11 @@ def main():
         batch_augment_query = sum(batch_augment_query ,[])
         ids = batch['id']
         type_list = batch['type']
-        data_type_list = batch['data_type']
         
         augment_outputs = llm.generate(batch_augment_query, sampling_params)
         augment_outputs = [augment_outputs[i:i + args.top_n] for i in range(0, len(augment_outputs), args.top_n)]
         
-        for id, aug, type,data_type in zip(ids,augment_outputs, type_list,data_type_list):
+        for id, aug, type in zip(ids,augment_outputs, type_list):
 
             all_save_list[locate] = {}
             all_save_list[locate]['id'] = id
@@ -246,7 +245,6 @@ def main():
                 tempt['text'] = aug_text
                 tempt['temperature'] = 1.0
                 tempt['type'] = type[idx]
-                tempt['data_type']=data_type
                 tempt['loop'] = str(1)
                 all_save_list[locate]['context'].append(tempt)
             locate+=1

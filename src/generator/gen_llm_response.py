@@ -172,11 +172,11 @@ class LLMDataset(Dataset):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_data_path', type=str,
-                        default='/data/groups/QY_LLM_Other/lixinze/icrl_2024/rerank/LLM_rerank/marco/train_4000_noread_psg_top50/train_psg.jsonl',
+                        default=None,
                         help="The path of the training/evaluation data file to be processed.",
                         )
     parser.add_argument('--model_name_or_path', type=str,
-                        default='/home/lixz23/pretrain-model/Llama3-8b-instruct',
+                        default=None,
                         help="The path of the LLM.")
     parser.add_argument('--output_path', type=str,
                         default=None,
@@ -186,7 +186,6 @@ def main():
     parser.add_argument('--top_n', type=int,
                         default=5)
     parser.add_argument('--llama_style', action='store_true',
-                        default=True,
                         help="Whether to use the Llama model.")
     parser.add_argument('--loop', type=int,
                         default=5,
@@ -253,7 +252,6 @@ def main():
             batch_augment_query = batch['augment_input']
             ids = batch['id']
             type_list = batch['type']
-            data_type_list = batch['data_type']
             type_list = sum(type_list,[])
             # Both locate and prior are reset
             locate = next
@@ -268,11 +266,8 @@ def main():
                     merged_input.append(b)
 
                 outputs = llm.generate(merged_input, sampling_params)
-                data_type_list=[item for pair in zip(data_type_list, data_type_list) for item in pair]
                 ids=[item for pair in zip(ids, ids) for item in pair]
-                
-                for id, out, type,data_type in zip(ids,outputs, type_list,data_type_list):
-                    
+                for id, out, type in zip(ids,outputs, type_list):
                     # Only the first large loop needs to put data, so here loop=0
                     if all_save_list[locate]==[]:
                         all_save_list[locate] = {}
@@ -283,7 +278,6 @@ def main():
                     tempt['text'] = out.outputs[0].text
                     tempt['temperature'] = temp
                     tempt['type'] = type
-                    tempt['data_type']=data_type
                     tempt['loop'] = str(loop+1)
                     all_save_list[locate]['context'].append(tempt)
 

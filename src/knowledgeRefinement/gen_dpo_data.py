@@ -64,35 +64,36 @@ def save_radit_data(args, raw_data, dpo_data):
         for item, dpo_item in tqdm(zip(raw_data,dpo_data)):
             an = item['answer']
             new_dpo_item=[]
+            data_type=item['data_type']
             for id, sub_dpo_item in enumerate(dpo_item['context']):
             
                 if args.llama_style:
-                    if sub_dpo_item['data_type'] in ['math_qa', 'commonsense_qa','aqua_rat']:
+                    if data_type in ['math_qa', 'commonsense_qa','aqua_rat']:
                         score = _acc_score(sub_dpo_item['text'][:3], an)
 
-                    if sub_dpo_item['data_type'] in ['ecqa']:
+                    if data_type in ['ecqa']:
                         score = _acc_score(sub_dpo_item['text'], an)
 
-                    if sub_dpo_item['data_type'] in ['gsm8k','strategyqa']: #minicpm: 'aqua_rat','ecqa'
+                    if data_type in ['gsm8k','strategyqa']: #minicpm: 'aqua_rat','ecqa'
                         cot_index = sub_dpo_item['text'].find("COT")
                         # If "[COT]" is found, return the part before it, otherwise return the entire string
                         text = sub_dpo_item['text'][:cot_index] if cot_index != -1 else sub_dpo_item['text']
                         score = _acc_score(text, an)
 
                 else:
-                    if sub_dpo_item['data_type'] in ['math_qa', 'commonsense_qa']:
+                    if data_type in ['math_qa', 'commonsense_qa']:
                         score = _acc_score(sub_dpo_item['text'][:3], an)
 
-                    if sub_dpo_item['data_type'] in ['gsm8k','strategyqa','aqua_rat','ecqa']:
+                    if data_type in ['gsm8k','strategyqa','aqua_rat','ecqa']:
                         cot_index = sub_dpo_item['text'].find("COT")
                         # If "[COT]" is found, return the part before it, otherwise return the entire string
                         text = sub_dpo_item['text'][:cot_index] if cot_index != -1 else sub_dpo_item['text']
                         score = _acc_score(text, an)
 
-                if sub_dpo_item['data_type'] in ['wiki_qa','yahoo_answers_qa','marcoqa']:
+                if data_type in ['wiki_qa','yahoo_answers_qa','marcoqa']:
                         score = _rougel_score(sub_dpo_item['text'], an)
                         
-                if sub_dpo_item['data_type'] in ['web_questions']:
+                if data_type in ['web_questions']:
                         score = _acc_score(sub_dpo_item['text'], an)
                     
                     
