@@ -30,7 +30,7 @@ def merge_jsonl_files(input_folder, output_file):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_data_path', type=str,
+    parser.add_argument('--input_folder', type=str,
                         default=None,
                         help="The folder where the chunk files you want to merge are located.",
                         )
