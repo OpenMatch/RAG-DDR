@@ -1,6 +1,6 @@
 # RAG-DDR: Optimizing Retrieval-Augmented Generation Using Differentiable Data Rewards
 
-Source code for our paper :  
+Source code for our ICLR’25 paper :  
 [RAG-DDR: Optimizing Retrieval-Augmented Generation Using Differentiable Data Rewards](https://arxiv.org/abs/2410.13509)
 
 Click the links below to view our papers, checkpoints, and published models:
