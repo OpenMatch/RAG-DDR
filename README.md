@@ -60,7 +60,7 @@ After that, you can use [bge-large-en-v1.5](https://huggingface.co/BAAI/bge-larg
 
 ```
 cd data
-bash getembedding.sh
+bash get_embedding.sh
 ```
 Then, you need to get the appropriate trec file for the original train/dev dataset which are saved in ``--query_path`` and save it in ``--trec_save_path``:
 
